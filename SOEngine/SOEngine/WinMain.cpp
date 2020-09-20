@@ -8,6 +8,10 @@ int CALLBACK WinMain(
 	int nCmdShow
 )
 {
+	try
+	{
+
+
 	Window window(800, 300, "Special Operations Engine");
 	MSG msg;
 	BOOL gResult;
@@ -23,4 +27,13 @@ int CALLBACK WinMain(
 	}
 
 	return msg.wParam;
+	}
+	catch (const GreatException& e)
+	{
+		MessageBox(nullptr, e.what(), e.GetType(), MB_OK | MB_ICONEXCLAMATION);
+	}
+	catch (const std::exception& e)
+	{
+		MessageBox(nullptr, e.what(), "StandardException: ", MB_OK | MB_ICONEXCLAMATION);
+	}
 }
