@@ -36,4 +36,9 @@ int CALLBACK WinMain(
 	{
 		MessageBox(nullptr, e.what(), "StandardException: ", MB_OK | MB_ICONEXCLAMATION);
 	}
+	catch (...)
+	{
+		MessageBox(nullptr, "No deets: ", "Unknonwn exception", MB_OK | MB_ICONEXCLAMATION);
+	}
+	return -1;
 }

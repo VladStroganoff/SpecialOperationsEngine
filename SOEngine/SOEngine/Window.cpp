@@ -1,10 +1,11 @@
 #include "Fwin.h"
 #include "Window.h"
+#include "Exceptions.h"
 #include <sstream>
 
 Window::WindowClass Window::WindowClass::wndClass;
 
-Window::WindowClass::WindowClass() noexcept
+Window::WindowClass::WindowClass() 
 	: hInst(GetModuleHandle(nullptr))
 {
 	WNDCLASSEX winClass = { 0 };
@@ -28,14 +29,17 @@ Window::WindowClass::~WindowClass()
 }
 
 
-Window::Window(int width, int height, const char* name) noexcept
+Window::Window(int width, int height, const char* name)
 {
 	RECT winRect;
 	winRect.left = 100;
 	winRect.right = width + winRect.left;
 	winRect.top = 100;
 	winRect.bottom = height + winRect.top;
-	AdjustWindowRect(&winRect, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
+	if (FAILED(AdjustWindowRect(&winRect, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE)))
+	{
+		throw CHWND_LAST_EXCEPT();
+	};
 
 	hWind = CreateWindow
 	   (WindowClass::GetName(),
@@ -48,6 +52,11 @@ Window::Window(int width, int height, const char* name) noexcept
 		nullptr, nullptr,
 		WindowClass::GetInstance(),
 		this);
+
+	if (hWind == nullptr)
+	{
+		throw CHWND_LAST_EXCEPT();
+	}
 
 	ShowWindow(hWind, SW_SHOWDEFAULT);
 }
@@ -146,5 +155,16 @@ std::string Window::Exception::TranslateErrorCode(HRESULT hr) noexcept
 	return errorString;
 
 }
+
+HRESULT Window::Exception::GetErrorCode() const noexcept
+{
+	return hr;
+}
+
+std::string Window::Exception::GetErrorString() const noexcept
+{
+	return TranslateErrorCode(hr);
+}
+
 
 
