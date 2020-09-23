@@ -155,8 +155,16 @@
   <ItemGroup>
     <ClInclude Include="Exceptions.h" />
     <ClInclude Include="FWin.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WindowsMessageMap.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="SOEngine.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="C:\Users\Felix\Desktop\download.ico" />
+    <Image Include="C:\Users\Felix\Desktop\download.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

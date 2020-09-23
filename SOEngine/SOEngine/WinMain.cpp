@@ -1,5 +1,6 @@
 
 #include "Window.h"
+#include "WindowsMessageMap.h"
 
 int CALLBACK WinMain(
 	HINSTANCE hInstance,
@@ -7,7 +8,12 @@ int CALLBACK WinMain(
 	LPSTR lpCmdLine,
 	int nCmdShow
 )
+
+
 {
+	static WindowsMessageMap map;
+
+
 	try
 	{
 

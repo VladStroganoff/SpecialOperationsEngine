@@ -2,6 +2,8 @@
 #include "Window.h"
 #include "Exceptions.h"
 #include <sstream>
+#include "resource.h"
+ 
 
 Window::WindowClass Window::WindowClass::wndClass;
 
@@ -14,12 +16,12 @@ Window::WindowClass::WindowClass()
 	winClass.lpfnWndProc = HandleMsgSetup;
 	winClass.cbClsExtra = 0;
 	winClass.cbWndExtra = 0;
-	winClass.hIcon = nullptr;
+	winClass.hIcon = static_cast<HICON>(LoadImage(hInst, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 32,32,0)); // what icon to use
 	winClass.hCursor = nullptr;
 	winClass.hbrBackground = nullptr;
 	winClass.lpszMenuName = nullptr;
 	winClass.lpszClassName = GetName();
-	winClass.hIconSm = nullptr;
+	winClass.hIconSm = static_cast<HICON>(LoadImage(hInst, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 16, 16, 0)); // icon
 	RegisterClassEx(&winClass);
 }
 
@@ -79,17 +81,14 @@ HINSTANCE Window::WindowClass::GetInstance() noexcept
 
 LRESULT WINAPI Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
-	if (msg == WM_NCCREATE) // Creation of the windows window
+	if (msg == WM_NCCREATE)
 	{
-		const CREATESTRUCTW* const createPointer = reinterpret_cast<CREATESTRUCTW*>(lParam);
-		Window* const pWnd = static_cast<Window*>(createPointer->lpCreateParams);
-
+		const CREATESTRUCTW* const pCreate = reinterpret_cast<CREATESTRUCTW*>(lParam);
+		Window* const pWnd = static_cast<Window*>(pCreate->lpCreateParams);
 		SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pWnd));
-		SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(&Window::HandleMsgThunk));
-
+		SetWindowLongPtr(hWnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&Window::HandleMsgThunk));
 		return pWnd->HandleMsg(hWnd, msg, wParam, lParam);
 	}
-
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
@@ -107,8 +106,6 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 		PostQuitMessage(0);
 		return 0;
 	}
-
-
 
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
