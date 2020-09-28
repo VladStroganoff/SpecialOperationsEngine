@@ -16,8 +16,6 @@ int CALLBACK WinMain(
 
 	try
 	{
-
-
 	Window window(800, 300, "Special Operations Engine");
 	MSG msg;
 	BOOL gResult;

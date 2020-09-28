@@ -163,8 +163,9 @@
     <ResourceCompile Include="SOEngine.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="C:\Users\Felix\Desktop\download.ico" />
-    <Image Include="C:\Users\Felix\Desktop\download.jpg" />
+    <Image Include="C:\Users\Felix\Desktop\SOApp.png">
+      <DeploymentContent>false</DeploymentContent>
+    </Image>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

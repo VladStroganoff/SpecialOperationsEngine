@@ -10,19 +10,26 @@ Window::WindowClass Window::WindowClass::wndClass;
 Window::WindowClass::WindowClass() 
 	: hInst(GetModuleHandle(nullptr))
 {
+	
+	
+	
 	WNDCLASSEX winClass = { 0 };
 	winClass.cbSize = sizeof(winClass);
 	winClass.style = CS_OWNDC;
 	winClass.lpfnWndProc = HandleMsgSetup;
 	winClass.cbClsExtra = 0;
 	winClass.cbWndExtra = 0;
-	winClass.hIcon = static_cast<HICON>(LoadImage(hInst, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 32,32,0)); // what icon to use
+	winClass.hInstance = GetInstance();
+	winClass.hIcon = nullptr;
 	winClass.hCursor = nullptr;
 	winClass.hbrBackground = nullptr;
 	winClass.lpszMenuName = nullptr;
 	winClass.lpszClassName = GetName();
-	winClass.hIconSm = static_cast<HICON>(LoadImage(hInst, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 16, 16, 0)); // icon
+	winClass.hIconSm = nullptr;
 	RegisterClassEx(&winClass);
+
+
+	HICON icon = static_cast<HICON>(::LoadImage(GetInstance(), MAKEINTRESOURCE(AppIcon), IMAGE_ICON, 32, 32, LR_DEFAULTCOLOR)); /// WHYYY?!
 }
 
 Window::WindowClass::~WindowClass()
@@ -81,14 +88,17 @@ HINSTANCE Window::WindowClass::GetInstance() noexcept
 
 LRESULT WINAPI Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
-	if (msg == WM_NCCREATE)
+	if (msg == WM_NCCREATE) // Creation of the windows window
 	{
-		const CREATESTRUCTW* const pCreate = reinterpret_cast<CREATESTRUCTW*>(lParam);
-		Window* const pWnd = static_cast<Window*>(pCreate->lpCreateParams);
+		const CREATESTRUCTW* const createPointer = reinterpret_cast<CREATESTRUCTW*>(lParam);
+
+		Window* const pWnd = static_cast<Window*>(createPointer->lpCreateParams);
 		SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pWnd));
 		SetWindowLongPtr(hWnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&Window::HandleMsgThunk));
+
 		return pWnd->HandleMsg(hWnd, msg, wParam, lParam);
 	}
+
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 

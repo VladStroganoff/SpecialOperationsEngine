@@ -57,20 +57,10 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_AUS
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// Application
+// PNG
 //
 
-IDR_APPLICATION1        Application             "C:\\Users\\Felix\\Desktop\\download.jpg"
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Icon
-//
-
-// Icon with lowest ID value placed first to ensure application icon
-// remains consistent on all systems.
-IDI_ICON1               ICON                    "C:\\Users\\Felix\\Desktop\\download.ico"
+AppIcon                 PNG                     "C:\\Users\\Felix\\Desktop\\SOApp.png"
 
 #endif    // English (Australia) resources
 /////////////////////////////////////////////////////////////////////////////

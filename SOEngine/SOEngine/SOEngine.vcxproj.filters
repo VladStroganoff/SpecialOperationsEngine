@@ -51,10 +51,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="C:\Users\Felix\Desktop\download.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="C:\Users\Felix\Desktop\download.jpg">
+    <Image Include="C:\Users\Felix\Desktop\SOApp.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
