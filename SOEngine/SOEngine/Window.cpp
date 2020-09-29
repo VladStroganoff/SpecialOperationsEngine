@@ -10,9 +10,6 @@ Window::WindowClass Window::WindowClass::wndClass;
 Window::WindowClass::WindowClass() 
 	: hInst(GetModuleHandle(nullptr))
 {
-	
-	
-	
 	WNDCLASSEX winClass = { 0 };
 	winClass.cbSize = sizeof(winClass);
 	winClass.style = CS_OWNDC;
@@ -20,16 +17,13 @@ Window::WindowClass::WindowClass()
 	winClass.cbClsExtra = 0;
 	winClass.cbWndExtra = 0;
 	winClass.hInstance = GetInstance();
-	winClass.hIcon = nullptr;
+	winClass.hIcon = static_cast<HICON>(LoadImage(hInst, MAKEINTRESOURCE(AppIcon), IMAGE_ICON, 64, 64, 0));
 	winClass.hCursor = nullptr;
 	winClass.hbrBackground = nullptr;
 	winClass.lpszMenuName = nullptr;
 	winClass.lpszClassName = GetName();
-	winClass.hIconSm = nullptr;
+	winClass.hIconSm = static_cast<HICON>(LoadImage(hInst, MAKEINTRESOURCE(AppIcon), IMAGE_ICON, 32, 32, 0));
 	RegisterClassEx(&winClass);
-
-
-	HICON icon = static_cast<HICON>(::LoadImage(GetInstance(), MAKEINTRESOURCE(AppIcon), IMAGE_ICON, 32, 32, LR_DEFAULTCOLOR)); /// WHYYY?!
 }
 
 Window::WindowClass::~WindowClass()

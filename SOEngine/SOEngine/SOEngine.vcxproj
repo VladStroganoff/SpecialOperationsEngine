@@ -148,6 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Exceptions.cpp" />
+    <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WindowsMessageMap.cpp" />
     <ClCompile Include="WinMain.cpp" />
@@ -155,6 +156,7 @@
   <ItemGroup>
     <ClInclude Include="Exceptions.h" />
     <ClInclude Include="FWin.h" />
+    <ClInclude Include="Keyboard.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WindowsMessageMap.h" />
@@ -163,9 +165,7 @@
     <ResourceCompile Include="SOEngine.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="C:\Users\Felix\Desktop\SOApp.png">
-      <DeploymentContent>false</DeploymentContent>
-    </Image>
+    <Image Include="AppIcon.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
