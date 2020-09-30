@@ -64,12 +64,24 @@ void Keyboard::EnableAutorepeat() noexcept
 	autorepeatEnabled = true;
 }
 
+bool Keyboard::AutoreapeatIsEnabled() noexcept
+{
+	return autorepeatEnabled;
+}
+
 void Keyboard::DisableAutoRepeat() noexcept
 {
 	autorepeatEnabled = false;
 }
 
-void Keyboard::OnKeyIsPressed(unsigned char keycode) noexcept
+void Keyboard::OnKeyPressed(unsigned char keycode) noexcept
+{
+	keystates[keycode] = true;
+	keybuffer.push(Keyboard::Event(Keyboard::Event::Type::Press, keycode));
+	TrimBuffer(keybuffer);
+}
+
+void Keyboard::OnKeyRealised(unsigned char keycode) noexcept
 {
 	keystates[keycode] = true;
 	keybuffer.push(Keyboard::Event(Keyboard::Event::Type::Press, keycode));
@@ -90,7 +102,7 @@ void Keyboard::ClearState() noexcept
 template<typename T>
 void Keyboard::TrimBuffer(std::queue<T>& buffer) noexcept
 {
-	whie(buffer.size() > bufferSize)
+	while (buffer.size() > bufferSize)
 	{
 		buffer.pop();
 	}

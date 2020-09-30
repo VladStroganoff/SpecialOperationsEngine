@@ -23,6 +23,11 @@ int CALLBACK WinMain(
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
+		if (window.keyboard.KeyIsPressed(VK_MENU))
+		{
+			MessageBox(nullptr, "Pressed some bullshit", "Pressed spacebar",0);
+		}
+
 	}
 
 	if (gResult == -1)

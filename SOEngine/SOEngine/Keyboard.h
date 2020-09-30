@@ -63,7 +63,7 @@ public:
 	void DisableAutoRepeat() noexcept;
 	bool AutoreapeatIsEnabled() noexcept;
 private: // Window private stuff
-	void OnKeyIsPressed(unsigned char keycode) noexcept;
+	void OnKeyPressed(unsigned char keycode) noexcept;
 	void OnKeyRealised(unsigned char keycode) noexcept;
 	void OnChar(char character) noexcept;
 	void ClearState() noexcept;
