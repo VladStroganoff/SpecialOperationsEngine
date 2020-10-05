@@ -47,7 +47,7 @@ public:
 		{
 			return type != Type::Invalid;
 		}
-		Type GetType() const noexcept
+		Type GetType() const noexcept // somethin going on!
 		{
 			return type;
 		}

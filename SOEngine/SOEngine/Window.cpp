@@ -3,11 +3,11 @@
 #include "Exceptions.h"
 #include <sstream>
 #include "resource.h"
- 
+
 
 Window::WindowClass Window::WindowClass::wndClass;
 
-Window::WindowClass::WindowClass() 
+Window::WindowClass::WindowClass()
 	: hInst(GetModuleHandle(nullptr))
 {
 	WNDCLASSEX winClass = { 0 };
@@ -39,13 +39,13 @@ Window::Window(int width, int height, const char* name)
 	winRect.right = width + winRect.left;
 	winRect.top = 100;
 	winRect.bottom = height + winRect.top;
-	if (FAILED(AdjustWindowRect(&winRect, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE)))
+	if (AdjustWindowRect(&winRect, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE) == 0)
 	{
 		throw CHWND_LAST_EXCEPT();
 	};
 
 	hWind = CreateWindow
-	   (WindowClass::GetName(),
+	(WindowClass::GetName(),
 		name,
 		WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
 		CW_USEDEFAULT,
@@ -99,7 +99,15 @@ LRESULT WINAPI Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 LRESULT WINAPI Window::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
 	Window* const pWnd = reinterpret_cast<Window*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
-	return pWnd->HandleMsg(hWnd,msg,wParam,lParam);
+	return pWnd->HandleMsg(hWnd, msg, wParam, lParam);
+}
+
+void Window::SetTitle(const std::string nuName)
+{
+	if (SetWindowText(hWind, nuName.c_str()) == 0)
+	{
+		throw CHWND_LAST_EXCEPT();
+	}
 }
 
 LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
@@ -107,28 +115,89 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	switch (msg)
 	{
 	case WM_CLOSE:
+	{
 		PostQuitMessage(0);
 		return 0;
+	}
+		
+	case WM_KILLFOCUS:
+	{
+		keyboard.ClearState();
+		break;
+	}
+
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
+	{
 		if (!(lParam & 0x40000000) || keyboard.AutoreapeatIsEnabled())
 			keyboard.OnKeyPressed(static_cast<unsigned char>(wParam));
 		break;
+	}
+
 	case WM_KEYUP:
 	case WM_SYSKEYUP:
+	{
 		keyboard.OnKeyRealised(static_cast<unsigned char>(wParam));
 		break;
+	}
+		
 	case WM_CHAR:
+	{
 		keyboard.OnChar(static_cast<unsigned char>(wParam));
 		break;
+	}
+		
+
 	case WM_MOUSEMOVE:
+	{
+		POINTS point = MAKEPOINTS(lParam);
+		mouse.OnMouseMove(point.x, point.y);
+		break;
+	}
+
+	case WM_LBUTTONDOWN:
+	{
+		const POINTS point = MAKEPOINTS(lParam);
+		mouse.OnLeftPressed(point.x, point.y);
+		break;
+	}
+
+	case WM_RBUTTONDOWN:
+	{
+		const POINTS point = MAKEPOINTS(lParam);
+		mouse.OnRightPressed(point.x, point.y);
+		break;
+	}
+
+	case WM_LBUTTONUP:
+	{
+		const POINTS point = MAKEPOINTS(lParam);
+		mouse.OnLeftRealeased(point.x, point.y);
+		break;
+	}
+
+	case WM_RBUTTONUP:
+	{
+		const POINTS point = MAKEPOINTS(lParam);
+		mouse.OnRightRealeased(point.x, point.y);
+		break;
+	}
+
+	case WM_MOUSEWHEEL:
+	{
+		const POINTS point = MAKEPOINTS(lParam);
+		if (GET_WHEEL_DELTA_WPARAM(wParam) > 0)
+		{
+			mouse.OnWheelUp(point.x, point.y);
+		}
+		else if (GET_WHEEL_DELTA_WPARAM(lParam) < 0)
+		{
+			mouse.OnWheelDown(point.x, point.y);
+		}
+		break;
+	}
 
 
-		keyboard.OnChar(static_cast<unsigned char>(wParam));
-		break;
-	case WM_KILLFOCUS:
-		keyboard.ClearState();
-		break;
 	}
 
 

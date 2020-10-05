@@ -1,6 +1,7 @@
 
 #include "Window.h"
 #include "WindowsMessageMap.h"
+#include <sstream>
 
 int CALLBACK WinMain(
 	HINSTANCE hInstance,
@@ -23,10 +24,19 @@ int CALLBACK WinMain(
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
-		if (window.keyboard.KeyIsPressed(VK_MENU))
+
+
+		while (!window.mouse.IsEmpty())
 		{
-			MessageBox(nullptr, "Pressed some bullshit", "Pressed spacebar",0);
+			const auto event = window.mouse.Read();
+			if (event.GetType() == Mouse::Event::Type::Move)
+			{
+				std::ostringstream oss;
+				oss << "Mouse Position: (" << event.GetPosX() << "," << event.GetPosY() << ")";
+				window.SetTitle(oss.str());
+			}
 		}
+
 
 	}
 
