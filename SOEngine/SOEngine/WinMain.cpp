@@ -24,20 +24,6 @@ int CALLBACK WinMain(
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
-
-
-		while (!window.mouse.IsEmpty())
-		{
-			const auto event = window.mouse.Read();
-			if (event.GetType() == Mouse::Event::Type::Move)
-			{
-				std::ostringstream oss;
-				oss << "Mouse Position: (" << event.GetPosX() << "," << event.GetPosY() << ")";
-				window.SetTitle(oss.str());
-			}
-		}
-
-
 	}
 
 	if (gResult == -1)

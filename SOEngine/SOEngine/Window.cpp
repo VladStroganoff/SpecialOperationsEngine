@@ -33,6 +33,9 @@ Window::WindowClass::~WindowClass()
 
 
 Window::Window(int width, int height, const char* name)
+	:
+	width(width),
+	height(height)
 {
 	RECT winRect;
 	winRect.left = 100;
@@ -150,8 +153,30 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 
 	case WM_MOUSEMOVE:
 	{
-		POINTS point = MAKEPOINTS(lParam);
-		mouse.OnMouseMove(point.x, point.y);
+		const POINTS point = MAKEPOINTS(lParam);
+
+		if (point.x >= 0 && point.x < width && point.y >= 0 && point.y < height)
+		{
+			mouse.OnMouseMove(point.x, point.y);
+			if (!mouse.IsInWindow())
+			{
+				SetCapture(hWind); 
+				mouse.OnMouseEnter();
+			}
+		}
+		else
+		{
+			if (wParam & (MK_LBUTTON | MK_RBUTTON))
+			{
+				mouse.OnMouseMove(point.x, point.y);
+			}
+			else
+			{
+				ReleaseCapture();
+				mouse.OnMouseLeave();
+			}
+		}
+
 		break;
 	}
 
@@ -172,28 +197,22 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	case WM_LBUTTONUP:
 	{
 		const POINTS point = MAKEPOINTS(lParam);
-		mouse.OnLeftRealeased(point.x, point.y);
+		mouse.OnLeftReleased(point.x, point.y);
 		break;
 	}
 
 	case WM_RBUTTONUP:
 	{
 		const POINTS point = MAKEPOINTS(lParam);
-		mouse.OnRightRealeased(point.x, point.y);
+		mouse.OnRightPressed(point.x, point.y);
 		break;
 	}
 
 	case WM_MOUSEWHEEL:
 	{
 		const POINTS point = MAKEPOINTS(lParam);
-		if (GET_WHEEL_DELTA_WPARAM(wParam) > 0)
-		{
-			mouse.OnWheelUp(point.x, point.y);
-		}
-		else if (GET_WHEEL_DELTA_WPARAM(lParam) < 0)
-		{
-			mouse.OnWheelDown(point.x, point.y);
-		}
+		const int delta = GET_WHEEL_DELTA_WPARAM(wParam);
+		mouse.OnWheelDelta(point.x, point.y, delta);
 		break;
 	}
 

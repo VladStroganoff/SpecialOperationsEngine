@@ -1,7 +1,6 @@
 #pragma once
 #include <queue>
 
-
 class Mouse
 {
 	friend class Window;
@@ -12,12 +11,14 @@ public:
 		enum class Type
 		{
 			LPress,
-			LRealease,
+			LRelease,
 			RPress,
-			RRealease,
+			RRelease,
 			WheelUp,
 			WheelDown,
 			Move,
+			Enter,
+			Leave,
 			Invalid
 		};
 	private:
@@ -35,25 +36,25 @@ public:
 			x(0),
 			y(0)
 		{}
-		Event(Type _type, const Mouse& _parent)
+		Event(Type type, const Mouse& parent) noexcept
 			:
 			type(type),
-			leftIsPressed(_parent.leftIsPressed),
-			rightIsPressed(_parent.rightIsPressed),
-			x(_parent.x),
-			y(_parent.y)
+			leftIsPressed(parent.leftIsPressed),
+			rightIsPressed(parent.rightIsPressed),
+			x(parent.x),
+			y(parent.y)
 		{}
 		bool IsValid() const noexcept
 		{
 			return type != Type::Invalid;
 		}
-		Type GetType() const noexcept // somethin going on!
+		Type GetType() const noexcept
 		{
 			return type;
 		}
 		std::pair<int, int> GetPos() const noexcept
 		{
-			return { x,y };
+			return{ x,y };
 		}
 		int GetPosX() const noexcept
 		{
@@ -75,10 +76,11 @@ public:
 public:
 	Mouse() = default;
 	Mouse(const Mouse&) = delete;
-	Mouse& operator = (const Mouse&) = delete;
+	Mouse& operator=(const Mouse&) = delete;
 	std::pair<int, int> GetPos() const noexcept;
 	int GetPosX() const noexcept;
 	int GetPosY() const noexcept;
+	bool IsInWindow() const noexcept;
 	bool LeftIsPressed() const noexcept;
 	bool RightIsPressed() const noexcept;
 	Mouse::Event Read() noexcept;
@@ -89,18 +91,23 @@ public:
 	void Flush() noexcept;
 private:
 	void OnMouseMove(int x, int y) noexcept;
+	void OnMouseLeave() noexcept;
+	void OnMouseEnter() noexcept;
 	void OnLeftPressed(int x, int y) noexcept;
-	void OnLeftRealeased(int x, int y) noexcept;
+	void OnLeftReleased(int x, int y) noexcept;
 	void OnRightPressed(int x, int y) noexcept;
-	void OnRightRealeased(int x, int y) noexcept;
+	void OnRightReleased(int x, int y) noexcept;
 	void OnWheelUp(int x, int y) noexcept;
 	void OnWheelDown(int x, int y) noexcept;
 	void TrimBuffer() noexcept;
+	void OnWheelDelta(int x, int y, int delta);
 private:
 	static constexpr unsigned int bufferSize = 16u;
 	int x;
 	int y;
 	bool leftIsPressed = false;
 	bool rightIsPressed = false;
+	bool isInWindow = false;
+	int wheelDeltaCarry = 0;
 	std::queue<Event> buffer;
 };

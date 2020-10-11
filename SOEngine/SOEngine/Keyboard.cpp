@@ -32,10 +32,7 @@ char Keyboard::ReadChar() noexcept
 		charbuffer.pop();
 		return charCode;
 	}
-	else
-	{
-		return 0;
-	}
+	return {};
 }
 
 bool Keyboard::CharIsEmpty() const noexcept
