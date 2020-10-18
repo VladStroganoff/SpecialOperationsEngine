@@ -63,8 +63,8 @@ Window::Window(int width, int height, const char* name)
 	{
 		throw CHWND_LAST_EXCEPT();
 	}
-
 	ShowWindow(hWind, SW_SHOWDEFAULT);
+	pGfx = std::make_unique<Graphics>(hWind); // initialize graphics 
 }
 
 Window::~Window()
@@ -128,6 +128,11 @@ std::optional<int> Window::ProcessMessage()
 	}
 
 	return{};
+}
+
+Graphics& Window::Gfx()
+{
+	return *pGfx;
 }
 
 
