@@ -11,7 +11,7 @@ int App::Go()
 {
 	while (true)
 	{
-		if (const auto ecode = Window::ProcessMessage()) // do we quit? is there input?
+		if (const auto ecode = Window::ProcessMessages()) // do we quit? is there input?
 		{
 			return *ecode;
 		}
